@@ -1,0 +1,11 @@
+title: KissJson
+description: A tiny, high-performance, zero-dependency Java 17+ JSON library
+url: "https://arthurhoch.github.io"
+baseurl: "/kiss-json"
+theme: jekyll-theme-minimal
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+gems:
+  - jekyll-readme-index
