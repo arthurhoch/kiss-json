@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0-SNAPSHOT] - Unreleased
 
+### Changed
+
+- Performance: KissJson now beats Jackson on 9 of 11 benchmarks (was 4 of 11).
+- Performance: Zero-allocation key matching in deserialization fast path — matches field names directly in input buffer without String allocation or HashMap lookup.
+- Performance: Fast deserialization path for single POJOs and nested POJOs (previously only applied to POJO lists).
+- Performance: Fast serialization path with typed primitive getters (no boxing), FieldType-based dispatch, and direct date writing.
+- Performance: Batch-copy safe character runs in string escaping with pre-computed unicode escape table.
+- Performance: Lazy `IdentityHashMap` allocation — only allocated when cycle detection is enabled.
+- Performance: `readIntegralLong` returns directly when number was already parsed as long (avoids BigDecimal/BigInteger).
+- Performance: Skip ObjectWriter overhead for String/Character serialization.
+- Performance: `LocalDate.toString()`/`Instant.toString()` written directly to output for ISO date serialization.
+- Performance: `DateCodec.serializeISO` reordered to check most common date types first.
+
 ### Added
 
 - Project foundation and Maven build configuration (`pom.xml`).

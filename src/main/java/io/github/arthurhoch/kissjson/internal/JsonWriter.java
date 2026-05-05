@@ -3,6 +3,17 @@ package io.github.arthurhoch.kissjson.internal;
 final class JsonWriter {
 
     private static final char[] HEX = "0123456789abcdef".toCharArray();
+    private static final String[] UNICODE_ESCAPES;
+
+    static {
+        UNICODE_ESCAPES = new String[32];
+        for (int c = 0; c < 32; c++) {
+            if (c != '\n' && c != '\r' && c != '\t' && c != '\b' && c != '\f') {
+                UNICODE_ESCAPES[c] = "\\u" + HEX[(c >> 12) & 0xF] + HEX[(c >> 8) & 0xF]
+                        + HEX[(c >> 4) & 0xF] + HEX[c & 0xF];
+            }
+        }
+    }
 
     private JsonWriter() {
     }
@@ -34,24 +45,25 @@ final class JsonWriter {
                     case '\t': out.append("\\t"); break;
                     case '\b': out.append("\\b"); break;
                     case '\f': out.append("\\f"); break;
-                    default: appendUnicodeEscape(out, c); break;
+                    default: out.append(UNICODE_ESCAPES[c]); break;
                 }
+            } else if (c == '"') {
+                out.append("\\\"");
+            } else if (c == '\\') {
+                out.append("\\\\");
             } else {
-                switch (c) {
-                    case '"':  out.append("\\\""); break;
-                    case '\\': out.append("\\\\"); break;
-                    default:   out.append(c); break;
+                int runStart = i;
+                int j = i + 1;
+                while (j < len) {
+                    char rc = s.charAt(j);
+                    if (rc == '"' || rc == '\\' || rc < 0x20) break;
+                    j++;
                 }
+                out.append(s, runStart, j);
+                i = j - 1;
             }
         }
         out.append('"');
     }
 
-    private static void appendUnicodeEscape(StringBuilder out, char c) {
-        out.append("\\u");
-        out.append(HEX[(c >> 12) & 0xF]);
-        out.append(HEX[(c >> 8) & 0xF]);
-        out.append(HEX[(c >> 4) & 0xF]);
-        out.append(HEX[c & 0xF]);
-    }
 }

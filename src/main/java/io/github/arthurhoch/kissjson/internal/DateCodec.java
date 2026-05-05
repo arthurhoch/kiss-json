@@ -104,14 +104,14 @@ final class DateCodec {
     }
 
     private static String serializeISO(Object value, ZoneId zoneId) {
-        if (value instanceof LocalDate) return ((LocalDate) value).format(LOCAL_DATE);
-        if (value instanceof LocalTime) return ((LocalTime) value).format(LOCAL_TIME);
-        if (value instanceof LocalDateTime) return ((LocalDateTime) value).format(LOCAL_DATE_TIME);
-        if (value instanceof OffsetDateTime) return ((OffsetDateTime) value).format(OFFSET_DATE_TIME);
-        if (value instanceof ZonedDateTime) return ((ZonedDateTime) value).format(ZONED_DATE_TIME);
-        if (value instanceof Instant) return ((Instant) value).toString();
-        if (value instanceof Duration) return ((Duration) value).toString();
-        if (value instanceof Period) return ((Period) value).toString();
+        if (value instanceof LocalDate ld) return ld.toString();
+        if (value instanceof Instant i) return i.toString();
+        if (value instanceof LocalDateTime ldt) return ldt.format(LOCAL_DATE_TIME);
+        if (value instanceof LocalTime lt) return lt.format(LOCAL_TIME);
+        if (value instanceof OffsetDateTime odt) return odt.format(OFFSET_DATE_TIME);
+        if (value instanceof ZonedDateTime zdt) return zdt.format(ZONED_DATE_TIME);
+        if (value instanceof Duration d) return d.toString();
+        if (value instanceof Period p) return p.toString();
         if (value instanceof Date) {
             Instant instant = ((Date) value).toInstant();
             return instant.atZone(zoneId).format(ZONED_DATE_TIME);
@@ -123,30 +123,30 @@ final class DateCodec {
     }
 
     private static String serializeEpochMillis(Object value, ZoneId zoneId) {
-        if (value instanceof LocalDate) return ((LocalDate) value).format(LOCAL_DATE);
-        if (value instanceof LocalTime) return ((LocalTime) value).format(LOCAL_TIME);
-        if (value instanceof LocalDateTime) return ((LocalDateTime) value).format(LOCAL_DATE_TIME);
-        if (value instanceof Duration) return ((Duration) value).toString();
-        if (value instanceof Period) return ((Period) value).toString();
-        if (value instanceof Instant) return String.valueOf(((Instant) value).toEpochMilli());
-        if (value instanceof OffsetDateTime) return String.valueOf(((OffsetDateTime) value).toInstant().toEpochMilli());
-        if (value instanceof ZonedDateTime) return String.valueOf(((ZonedDateTime) value).toInstant().toEpochMilli());
-        if (value instanceof Date) return String.valueOf(((Date) value).getTime());
-        if (value instanceof Calendar) return String.valueOf(((Calendar) value).getTimeInMillis());
+        if (value instanceof LocalDate ld) return ld.format(LOCAL_DATE);
+        if (value instanceof LocalTime lt) return lt.format(LOCAL_TIME);
+        if (value instanceof LocalDateTime ldt) return ldt.format(LOCAL_DATE_TIME);
+        if (value instanceof Instant i) return String.valueOf(i.toEpochMilli());
+        if (value instanceof OffsetDateTime odt) return String.valueOf(odt.toInstant().toEpochMilli());
+        if (value instanceof ZonedDateTime zdt) return String.valueOf(zdt.toInstant().toEpochMilli());
+        if (value instanceof Date d) return String.valueOf(d.getTime());
+        if (value instanceof Calendar c) return String.valueOf(c.getTimeInMillis());
+        if (value instanceof Duration d) return d.toString();
+        if (value instanceof Period p) return p.toString();
         throw new JsonException("Unsupported date/time type: " + value.getClass().getName());
     }
 
     private static String serializeEpochSeconds(Object value, ZoneId zoneId) {
-        if (value instanceof LocalDate) return ((LocalDate) value).format(LOCAL_DATE);
-        if (value instanceof LocalTime) return ((LocalTime) value).format(LOCAL_TIME);
-        if (value instanceof LocalDateTime) return ((LocalDateTime) value).format(LOCAL_DATE_TIME);
-        if (value instanceof Duration) return ((Duration) value).toString();
-        if (value instanceof Period) return ((Period) value).toString();
-        if (value instanceof Instant) return String.valueOf(((Instant) value).getEpochSecond());
-        if (value instanceof OffsetDateTime) return String.valueOf(((OffsetDateTime) value).toInstant().getEpochSecond());
-        if (value instanceof ZonedDateTime) return String.valueOf(((ZonedDateTime) value).toInstant().getEpochSecond());
-        if (value instanceof Date) return String.valueOf(((Date) value).getTime() / 1000);
-        if (value instanceof Calendar) return String.valueOf(((Calendar) value).getTimeInMillis() / 1000);
+        if (value instanceof LocalDate ld) return ld.format(LOCAL_DATE);
+        if (value instanceof LocalTime lt) return lt.format(LOCAL_TIME);
+        if (value instanceof LocalDateTime ldt) return ldt.format(LOCAL_DATE_TIME);
+        if (value instanceof Instant i) return String.valueOf(i.getEpochSecond());
+        if (value instanceof OffsetDateTime odt) return String.valueOf(odt.toInstant().getEpochSecond());
+        if (value instanceof ZonedDateTime zdt) return String.valueOf(zdt.toInstant().getEpochSecond());
+        if (value instanceof Date d) return String.valueOf(d.getTime() / 1000);
+        if (value instanceof Calendar c) return String.valueOf(c.getTimeInMillis() / 1000);
+        if (value instanceof Duration d) return d.toString();
+        if (value instanceof Period p) return p.toString();
         throw new JsonException("Unsupported date/time type: " + value.getClass().getName());
     }
 

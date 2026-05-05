@@ -8,6 +8,8 @@ import io.github.arthurhoch.kissjson.JsonMappingException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,7 @@ final class ObjectWriter {
     private ObjectWriter(JsonConfig config, int initialCapacity) {
         this.out = new StringBuilder(initialCapacity);
         this.config = config;
-        this.visited = new IdentityHashMap<>();
+        this.visited = config.failOnCycles() ? new IdentityHashMap<>() : null;
         this.checkCycles = config.failOnCycles();
         this.prettyPrint = config.prettyPrint();
         this.includeNulls = config.includeNulls();
@@ -48,6 +50,26 @@ final class ObjectWriter {
     }
 
     static String write(Object value, JsonConfig config) {
+        if (value instanceof String) {
+            StringBuilder sb = new StringBuilder(((String) value).length() + 16);
+            JsonWriter.escapeString((String) value, sb);
+            return sb.toString();
+        }
+        if (value instanceof Character) {
+            StringBuilder sb = new StringBuilder(8);
+            JsonWriter.escapeString(value.toString(), sb);
+            return sb.toString();
+        }
+
+        boolean fastPath = !config.failOnCycles() && !config.prettyPrint() && !config.includeNulls()
+                && config.maxDepth() == 128;
+
+        if (fastPath) {
+            ObjectWriter writer = new ObjectWriter(config, estimateInitialCapacity(value));
+            writer.writeFastValueTopLevel(value);
+            return writer.out.toString();
+        }
+
         ObjectWriter writer = new ObjectWriter(config, estimateInitialCapacity(value));
         writer.writeValue(value, new JsonPath());
         return writer.out.toString();
@@ -140,6 +162,274 @@ final class ObjectWriter {
             out.append(result);
         } else {
             JsonWriter.escapeString(result, out);
+        }
+    }
+
+    private void writeFastValueTopLevel(Object value) {
+        if (value instanceof List<?> list) {
+            writeFastList(list);
+        } else if (value instanceof Map<?, ?> map) {
+            writeFastMap(map);
+        } else if (isPlainObject(value)) {
+            writeFastObject(value);
+        } else {
+            writeValue(value, new JsonPath());
+        }
+    }
+
+    private void writeFastList(List<?> list) {
+        out.append('[');
+        boolean first = true;
+        Class<?> cachedClass = null;
+        ClassModel cachedModel = null;
+
+        for (int i = 0, size = list.size(); i < size; i++) {
+            if (!first) out.append(',');
+            first = false;
+            Object element = list.get(i);
+            if (element == null) {
+                out.append("null");
+            } else if (element instanceof String s) {
+                JsonWriter.escapeString(s, out);
+            } else if (element instanceof Boolean b) {
+                out.append(b ? "true" : "false");
+            } else if (element instanceof Integer || element instanceof Long || element instanceof Short || element instanceof Byte) {
+                out.append(((Number) element).longValue());
+            } else if (element instanceof Number n) {
+                writeFastNumber(n);
+            } else if (isPlainObject(element)) {
+                Class<?> cls = element.getClass();
+                if (cls != cachedClass) {
+                    cachedClass = cls;
+                    cachedModel = ClassModelCache.get(cls, config.fieldNaming());
+                }
+                writeFastObjectWithModel(element, cachedModel);
+            } else {
+                writeFastValueTopLevel(element);
+            }
+        }
+        out.append(']');
+    }
+
+    private void writeFastMap(Map<?, ?> map) {
+        out.append('{');
+        boolean first = true;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            String key = (String) entry.getKey();
+            if (!first) out.append(',');
+            first = false;
+            JsonWriter.escapeString(key, out);
+            out.append(':');
+            Object val = entry.getValue();
+            if (val == null) {
+                out.append("null");
+            } else if (val instanceof String s) {
+                JsonWriter.escapeString(s, out);
+            } else if (val instanceof Boolean b) {
+                out.append(b ? "true" : "false");
+            } else if (val instanceof Integer || val instanceof Long || val instanceof Short || val instanceof Byte) {
+                out.append(((Number) val).longValue());
+            } else if (val instanceof Number n) {
+                writeFastNumber(n);
+            } else {
+                writeFastValueTopLevel(val);
+            }
+        }
+        out.append('}');
+    }
+
+    private void writeFastNumber(Number value) {
+        if (value instanceof Double d) {
+            out.append(d.doubleValue());
+        } else if (value instanceof Float f) {
+            out.append(f.floatValue());
+        } else if (value instanceof BigDecimal bd) {
+            out.append(bd.toPlainString());
+        } else if (value instanceof BigInteger bi) {
+            out.append(bi.toString());
+        } else {
+            out.append(value.toString());
+        }
+    }
+
+    private void writeFastObject(Object obj) {
+        ClassModel model = ClassModelCache.get(obj.getClass(), config.fieldNaming());
+        writeFastObjectWithModel(obj, model);
+    }
+
+    private void writeFastObjectWithModel(Object obj, ClassModel model) {
+        FieldModel[] fields = model.fields();
+        int fieldCount = fields.length;
+        out.ensureCapacity(out.length() + fieldCount * 24);
+        out.append('{');
+        boolean first = true;
+
+        for (int fi = 0; fi < fieldCount; fi++) {
+            FieldModel fm = fields[fi];
+            FieldModel.FieldType ft = fm.fieldType();
+            if (fm.isPrimitive()) {
+                if (!first) out.append(',');
+                first = false;
+                out.append(fm.quotedNameColon());
+                switch (ft) {
+                    case INT -> out.append(fm.getInt(obj));
+                    case LONG -> out.append(fm.getLong(obj));
+                    case BOOLEAN -> out.append(fm.getBoolean(obj) ? "true" : "false");
+                    case DOUBLE -> out.append(fm.getDouble(obj));
+                    case FLOAT -> out.append(fm.getFloat(obj));
+                    case SHORT -> out.append(fm.getShort(obj));
+                    case BYTE -> out.append(fm.getByte(obj));
+                    case CHAR -> JsonWriter.escapeString(String.valueOf(fm.getChar(obj)), out);
+                    default -> out.append(fm.getValue(obj));
+                }
+            } else {
+                switch (ft) {
+                    case STRING: {
+                        String sv = (String) fm.getValue(obj);
+                        if (sv == null) continue;
+                        if (!first) out.append(',');
+                        first = false;
+                        out.append(fm.quotedNameColon());
+                        JsonWriter.escapeString(sv, out);
+                        break;
+                    }
+                    case OBJECT: {
+                        Object ov = fm.getValue(obj);
+                        if (ov == null) {
+                            if (!first) out.append(',');
+                            first = false;
+                            out.append(fm.quotedNameColon());
+                            out.append("null");
+                        } else {
+                            if (!first) out.append(',');
+                            first = false;
+                            out.append(fm.quotedNameColon());
+                            ClassModel nestedModel = ClassModelCache.get(fm.type(), config.fieldNaming());
+                            writeFastObjectWithModel(ov, nestedModel);
+                        }
+                        break;
+                    }
+                    case DATE: {
+                        Object dv = fm.getValue(obj);
+                        if (dv == null) {
+                            if (!first) out.append(',');
+                            first = false;
+                            out.append(fm.quotedNameColon());
+                            out.append("null");
+                        } else {
+                            if (!first) out.append(',');
+                            first = false;
+                            out.append(fm.quotedNameColon());
+                            if (fm.dateFormat() == null && config.dateFormat() == DateFormat.ISO) {
+                                out.append('"');
+                                if (dv instanceof LocalDate ld) out.append(ld.toString());
+                                else if (dv instanceof Instant i) out.append(i.toString());
+                                else out.append(DateCodec.serialize(dv, config.dateFormat(), config.zoneId(), null));
+                                out.append('"');
+                            } else {
+                                String result = DateCodec.serialize(dv, config.dateFormat(), config.zoneId(), fm.dateFormat());
+                                JsonWriter.escapeString(result, out);
+                            }
+                        }
+                        break;
+                    }
+                    default: {
+                        Object fv = fm.getValue(obj);
+                        if (fv == null) continue;
+                        if (!first) out.append(',');
+                        first = false;
+                        out.append(fm.quotedNameColon());
+                        writeFastValueFallback(fv, fm);
+                        break;
+                    }
+                }
+            }
+        }
+
+        out.append('}');
+    }
+
+    private void writeFastValue(Object value, FieldModel fm) {
+        if (fm != null) {
+            switch (fm.fieldType()) {
+                case STRING:
+                    JsonWriter.escapeString((String) value, out);
+                    return;
+                case BOOLEAN:
+                    out.append((boolean) value ? "true" : "false");
+                    return;
+                case INT: case LONG: case SHORT: case BYTE:
+                    out.append(((Number) value).longValue());
+                    return;
+                case DOUBLE:
+                    out.append(((Number) value).doubleValue());
+                    return;
+                case FLOAT:
+                    out.append(((Number) value).floatValue());
+                    return;
+                case BIG_DECIMAL:
+                    out.append(((BigDecimal) value).toPlainString());
+                    return;
+                case BIG_INTEGER:
+                    out.append(((BigInteger) value).toString());
+                    return;
+                case ENUM:
+                    Enum<?> e = (Enum<?>) value;
+                    String str = enumMode == EnumMode.TO_STRING ? e.toString() : e.name();
+                    JsonWriter.escapeString(str, out);
+                    return;
+                case DATE:
+                    if (fm.dateFormat() == null && config.dateFormat() == DateFormat.ISO) {
+                        out.append('"');
+                        if (value instanceof LocalDate ld) {
+                            out.append(ld.toString());
+                        } else if (value instanceof Instant i) {
+                            out.append(i.toString());
+                        } else {
+                            out.append(DateCodec.serialize(value, config.dateFormat(), config.zoneId(), null));
+                        }
+                        out.append('"');
+                    } else {
+                        String result = DateCodec.serialize(value, config.dateFormat(), config.zoneId(), fm.dateFormat());
+                        JsonWriter.escapeString(result, out);
+                    }
+                    return;
+                case OBJECT:
+                    ClassModel nestedModel = ClassModelCache.get(fm.type(), config.fieldNaming());
+                    writeFastObjectWithModel(value, nestedModel);
+                    return;
+                default:
+                    break;
+            }
+        }
+        writeFastValueFallback(value, fm);
+    }
+
+    private void writeFastValueFallback(Object value, FieldModel fm) {
+        if (value instanceof String s) {
+            JsonWriter.escapeString(s, out);
+        } else if (value instanceof Boolean b) {
+            out.append(b ? "true" : "false");
+        } else if (value instanceof Integer || value instanceof Long || value instanceof Short || value instanceof Byte) {
+            out.append(((Number) value).longValue());
+        } else if (value instanceof Double) {
+            out.append(((Double) value).doubleValue());
+        } else if (value instanceof Float) {
+            out.append(((Float) value).floatValue());
+        } else if (value instanceof BigDecimal bd) {
+            out.append(bd.toPlainString());
+        } else if (value instanceof BigInteger bi) {
+            out.append(bi.toString());
+        } else if (value instanceof Enum<?> e) {
+            String str = enumMode == EnumMode.TO_STRING ? e.toString() : e.name();
+            JsonWriter.escapeString(str, out);
+        } else if (value instanceof Number n) {
+            out.append(n.toString());
+        } else if (DateCodec.isDateType(value.getClass())) {
+            String result = DateCodec.serialize(value, config.dateFormat(), config.zoneId(), fm != null ? fm.dateFormat() : null);
+            JsonWriter.escapeString(result, out);
+        } else {
+            writeFastObject(value);
         }
     }
 

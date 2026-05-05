@@ -65,6 +65,10 @@ final class JsonReader {
         return numberIsLong ? BigDecimal.valueOf(numberLongValue) : numberDecimalValue;
     }
 
+    boolean isNumberLong() {
+        return numberIsLong;
+    }
+
     boolean isIntegral() {
         if (numberIsLong) return true;
         if (numberDecimalValue != null) {
@@ -194,6 +198,109 @@ final class JsonReader {
         nextToken();
         consume(JsonTokenType.COLON);
         return key;
+    }
+
+    int matchFieldKey(String[] names) {
+        if (current != JsonTokenType.STRING) {
+            throw parseError("Expected string for object key but was " + current);
+        }
+        String key = stringValue;
+        for (int n = 0; n < names.length; n++) {
+            if (key == names[n] || key.equals(names[n])) {
+                nextToken();
+                consume(JsonTokenType.COLON);
+                return n;
+            }
+        }
+        nextToken();
+        consume(JsonTokenType.COLON);
+        return -1;
+    }
+
+    int nextKeyOrEnd(String[] names) {
+        if (current == JsonTokenType.OBJECT_END) {
+            return -2;
+        }
+        skipWhitespace();
+        if (offset >= length) throw parseError("Unexpected end of input");
+        char c = buf[offset];
+        if (c == '}') {
+            if (current == JsonTokenType.COMMA) {
+                throw parseError("Trailing comma in object");
+            }
+            offset++;
+            column++;
+            current = JsonTokenType.OBJECT_END;
+            return -2;
+        }
+        if (c == ',') {
+            offset++;
+            column++;
+            skipWhitespace();
+            if (offset < length && buf[offset] == '}') {
+                throw parseError("Trailing comma in object");
+            }
+        }
+        if (offset >= length || buf[offset] != '"') {
+            throw parseError("Expected '\"' for object key");
+        }
+        int pos = offset + 1;
+        int endQuote = -1;
+        outer:
+        for (int n = 0; n < names.length; n++) {
+            String name = names[n];
+            int nlen = name.length();
+            if (pos + nlen > length) continue;
+            for (int j = 0; j < nlen; j++) {
+                char bc = buf[pos + j];
+                if (bc == '"') continue outer;
+                if (bc != name.charAt(j)) continue outer;
+            }
+            if (pos + nlen < length && buf[pos + nlen] == '"') {
+                endQuote = pos + nlen;
+                offset = endQuote + 1;
+                column += endQuote - pos + 2;
+                current = JsonTokenType.STRING;
+                stringValue = name;
+                skipColonFast();
+                return n;
+            }
+        }
+        offset = pos - 1;
+        readString();
+        current = JsonTokenType.STRING;
+        nextToken();
+        consume(JsonTokenType.COLON);
+        return -1;
+    }
+
+    void readObjectStartForFastPath() {
+        if (current != JsonTokenType.OBJECT_START) {
+            throw parseError("Expected '{' but was " + current);
+        }
+        incrementAndCheckDepth();
+    }
+
+    void readKeyAndAdvance() {
+        if (current != JsonTokenType.STRING) {
+            throw parseError("Expected string for object key but was " + current);
+        }
+        String key = stringValue;
+        nextToken();
+        consume(JsonTokenType.COLON);
+    }
+
+    private void skipColonFast() {
+        skipWhitespace();
+        if (offset >= length || buf[offset] != ':') {
+            throw parseError("Expected ':' after key");
+        }
+        offset++;
+        column++;
+        nextToken();
+        if (current == JsonTokenType.END) {
+            throw parseError("Unexpected end of input");
+        }
     }
 
     boolean hasNextEntry() {

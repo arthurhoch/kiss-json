@@ -217,6 +217,94 @@ final class FieldModel {
         }
     }
 
+    int getInt(Object obj) {
+        try {
+            return field.getInt(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    long getLong(Object obj) {
+        try {
+            return field.getLong(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    boolean getBoolean(Object obj) {
+        try {
+            return field.getBoolean(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    double getDouble(Object obj) {
+        try {
+            return field.getDouble(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    float getFloat(Object obj) {
+        try {
+            return field.getFloat(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    short getShort(Object obj) {
+        try {
+            return field.getShort(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    byte getByte(Object obj) {
+        try {
+            return field.getByte(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
+    char getChar(Object obj) {
+        try {
+            return field.getChar(obj);
+        } catch (IllegalAccessException e) {
+            throw new JsonMappingException(
+                    "Cannot get field '" + field.getName() + "' on " + obj.getClass().getName(),
+                    null, obj.getClass(), field.getName(), type, null
+            );
+        }
+    }
+
     void setInt(Object obj, int value) {
         try {
             field.setInt(obj, value);

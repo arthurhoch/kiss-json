@@ -29,6 +29,23 @@ final class ObjectReader {
     static <T> T parseAndRead(String json, Class<T> type, JsonConfig config) {
         JsonReader reader = new JsonReader(json, config);
         reader.nextToken();
+
+        if (reader.currentToken() == JsonTokenType.NULL) {
+            reader.nextToken();
+            reader.ensureFullyConsumed();
+            return null;
+        }
+
+        if (isDirectObjectType(type) && !config.failOnUnknownProperties() && !config.failOnMissingRequiredFields()
+                && !config.failOnDuplicateKeys() && !config.failOnNullForPrimitives() && config.maxDepth() == 128) {
+            ClassModel model = ClassModelCache.get(type, config.fieldNaming());
+            if (isSimplePojoModel(model)) {
+                T result = (T) readSimpleObject(reader, model, config.enumMode(), config, new JsonPath());
+                reader.ensureFullyConsumed();
+                return result;
+            }
+        }
+
         T result = (T) readValue(reader, type, null, config, new JsonPath());
         reader.ensureFullyConsumed();
         return result;
@@ -54,20 +71,8 @@ final class ObjectReader {
         if (directObject && !config.failOnUnknownProperties() && !config.failOnMissingRequiredFields()
                 && !config.failOnDuplicateKeys() && !config.failOnNullForPrimitives()) {
             ClassModel model = ClassModelCache.get(elementType, config.fieldNaming());
-            EnumMode enumMode = config.enumMode();
-            boolean isSimple = !model.hasAliases() && !model.hasRequiredFields() && !model.hasDateFields() && !model.hasNestedObjects();
-            int nonSimple = 0;
-            if (isSimple) {
-                for (FieldModel f : model.fields()) {
-                    switch (f.fieldType()) {
-                        case STRING, CHAR, BOOLEAN, INT, LONG, DOUBLE, FLOAT, SHORT, BYTE,
-                             BIG_DECIMAL, BIG_INTEGER, ENUM -> {}
-                        default -> { nonSimple++; }
-                    }
-                }
-            }
-            if (nonSimple == 0 && isSimple) {
-                List<T> result = readSimplePojoList(reader, model, enumMode, config, path);
+            if (isSimplePojoModel(model)) {
+                List<T> result = readSimplePojoList(reader, model, config.enumMode(), config, path);
                 reader.readArrayEnd();
                 reader.ensureFullyConsumed();
                 return result;
@@ -84,11 +89,9 @@ final class ObjectReader {
                                                   JsonConfig config, JsonPath path) {
         MethodHandle ctor = model.constructorHandle();
         FieldModel[] fields = model.fields();
-        Map<String, FieldModel> lookupMap = model.lookupMap();
-        int fieldCount = fields.length;
+        String[] fieldNames = model.fieldNames();
         int capacity = 128;
         List<T> result = new ArrayList<>(capacity);
-        int index = 0;
 
         while (reader.hasNextElement()) {
             Object instance;
@@ -105,19 +108,15 @@ final class ObjectReader {
                 );
             }
 
-            reader.readObjectStart();
+            reader.readObjectStartForFastPath();
 
-            while (reader.hasNextEntry()) {
-                String key = reader.readKey();
-
-                FieldModel fm = lookupMap.get(key);
-                if (fm != null) {
-                    setFieldFromToken(reader, instance, fm, enumMode, config, path);
+            int keyIdx;
+            while ((keyIdx = reader.nextKeyOrEnd(fieldNames)) != -2) {
+                if (keyIdx >= 0) {
+                    setSimpleField(reader, instance, fields[keyIdx], enumMode, config, path);
                 } else {
                     reader.skipValue();
                 }
-
-                reader.nextEntryOrEnd();
             }
 
             reader.readObjectEnd();
@@ -125,9 +124,24 @@ final class ObjectReader {
             T typed = (T) instance;
             result.add(typed);
             reader.nextElementOrEnd();
-            index++;
         }
         return result;
+    }
+
+    private static void setSimpleField(JsonReader reader, Object instance, FieldModel fm,
+                                        EnumMode enumMode, JsonConfig config, JsonPath path) {
+        if (fm.fieldType() == FieldModel.FieldType.OBJECT) {
+            if (reader.currentToken() == JsonTokenType.NULL) {
+                reader.nextToken();
+                fm.set(instance, null);
+            } else {
+                ClassModel nestedModel = ClassModelCache.get(fm.type(), config.fieldNaming());
+                Object nested = readSimpleObject(reader, nestedModel, enumMode, config, path);
+                fm.set(instance, nested);
+            }
+        } else {
+            setFieldFromToken(reader, instance, fm, enumMode, config, path);
+        }
     }
 
     private static void setFieldFromToken(JsonReader r, Object instance, FieldModel fm, EnumMode enumMode,
@@ -963,6 +977,9 @@ final class ObjectReader {
     }
 
     private static long readIntegralLong(JsonReader r, Class<?> targetType, JsonPath path) {
+        if (r.isNumberLong()) {
+            return r.longValue();
+        }
         BigDecimal value = r.decimalValue();
         try {
             value.toBigIntegerExact();
@@ -1047,6 +1064,43 @@ final class ObjectReader {
                 && !DateCodec.isDateType(type)
                 && !List.class.isAssignableFrom(type)
                 && !Map.class.isAssignableFrom(type);
+    }
+
+    private static boolean isSimplePojoModel(ClassModel model) {
+        if (model.hasAliases() || model.hasRequiredFields() || model.hasDateFields()) {
+            return false;
+        }
+        for (FieldModel f : model.fields()) {
+            switch (f.fieldType()) {
+                case STRING, CHAR, BOOLEAN, INT, LONG, DOUBLE, FLOAT, SHORT, BYTE,
+                     BIG_DECIMAL, BIG_INTEGER, ENUM, OBJECT -> {}
+                default -> { return false; }
+            }
+        }
+        return true;
+    }
+
+    private static Object readSimpleObject(JsonReader reader, ClassModel model, EnumMode enumMode,
+                                            JsonConfig config, JsonPath path) {
+        if (reader.currentToken() != JsonTokenType.OBJECT_START) {
+            throw typeMismatch(reader, model.type(), path);
+        }
+
+        Object instance = newInstance(model, path);
+
+        reader.readObjectStartForFastPath();
+
+        int keyIdx;
+        while ((keyIdx = reader.nextKeyOrEnd(model.fieldNames())) != -2) {
+            if (keyIdx >= 0) {
+                setSimpleField(reader, instance, model.fields()[keyIdx], enumMode, config, path);
+            } else {
+                reader.skipValue();
+            }
+        }
+
+        reader.readObjectEnd();
+        return instance;
     }
 
     private static void expectToken(JsonReader r, JsonTokenType expected, Class<?> targetType, JsonPath path) {

@@ -40,6 +40,16 @@ String escaping uses a static hex table (`char[] HEX`) and manual bit-shift oper
 
 `FieldModel` provides type-specialized setter methods (`setInt`, `setLong`, `setBoolean`, `setDouble`, `setFloat`, `setShort`, `setByte`, `setChar`) that call `Field.setXxx` directly. These avoid the boxing overhead of `MethodHandle.invoke(obj, value)` for primitive fields. The simple POJO fast path uses these typed setters exclusively.
 
+### Typed Primitive Field Getters
+
+`FieldModel` provides type-specialized getter methods (`getInt`, `getLong`, `getBoolean`, `getDouble`, `getFloat`, `getShort`, `getByte`, `getChar`) that call `Field.getXxx` directly. The fast serialization path uses these for primitive fields, avoiding boxing in `MethodHandle.invoke()`.
+
+### Zero-Allocation Key Matching (Deserialization)
+
+The `nextKeyOrEnd` method in `JsonReader` matches object keys against known field names by comparing characters directly in the input buffer — no `String` allocation, no `HashMap` lookup. When a key matches, the canonical field name is assigned to `stringValue` for identity comparison on subsequent calls. Unknown keys fall back to the normal `readString()` + HashMap path.
+
+This replaces the `hasNextEntry()` + `readKey()` + `lookupMap.get(key)` pattern in the fast path with a single method call per field.
+
 ### Precomputed Class Feature Flags
 
 `ClassModel` precomputes boolean flags at construction time:
@@ -170,16 +180,21 @@ This keeps the common typed path focused:
 
 The typed reader uses a mutable internal JSON path while mapping successful values. Full path strings are created only when building an exception. For homogeneous POJO lists and typed maps, the reader reuses the resolved `ClassModel` across elements/entries instead of doing a cache lookup for every object.
 
-### Simple POJO Fast Path
+### Simple POJO Fast Path (Deserialization)
 
-When deserializing a list of simple POJOs with default configuration, KissJson uses a specialized `readSimplePojoList` loop that:
+When deserializing a simple POJO or list of simple POJOs with default configuration, KissJson uses a specialized path that:
 
-1. Resolves the `ClassModel` once before reading the array.
-2. Pre-allocates the `ArrayList` with capacity for 128 elements (avoids resizing for typical sizes).
+1. Resolves the `ClassModel` once before reading.
+2. Pre-allocates the `ArrayList` with capacity for 128 elements for lists (avoids resizing for typical sizes).
 3. Uses `MethodHandle.invoke()` for object construction (avoids `InvocationTargetException` wrapping).
 4. Uses typed `Field.setInt/setBoolean/setDouble` setters (avoids boxing for primitive fields).
 5. Allocates zero tracking structures per object — no `Set`, no `boolean[]`, no `JsonPath` push/restore.
 6. Skips all config flag checks per key-value pair (all checks done once before the loop).
+7. Matches keys against known field names directly in the input buffer (zero-allocation key matching).
+
+For single-object deserialization (`readSimpleObject`), the same fast path applies. For nested POJO fields, the fast path recurses — nested objects are also deserialized without HashMap lookups or String allocation for keys.
+
+The fast path also avoids the 17-type `readValue()` dispatch chain and the wasteful depth increment/decrement that the general path performs.
 
 This fast path activates when:
 - The element type is a POJO (not `Object`, `String`, primitive, enum, etc.)
@@ -187,8 +202,30 @@ This fast path activates when:
 - `failOnMissingRequiredFields` is false (default)
 - `failOnDuplicateKeys` is false (default)
 - `failOnNullForPrimitives` is false (default)
-- The `ClassModel` has no aliases, no required fields, no date fields, no nested objects
-- All field types are simple (String, primitives, wrappers, BigDecimal, BigInteger, enum)
+- `maxDepth` is 128 (default)
+- The `ClassModel` has no aliases, no required fields, no date fields
+- All field types are simple (String, primitives, wrappers, BigDecimal, BigInteger, enum) or nested POJOs
+
+### Fast Serialization Path
+
+When serializing with default configuration (no cycles, no pretty-print, default null handling, default depth), KissJson uses a specialized `writeFastObjectWithModel` path that:
+
+1. Skips `JsonPath` allocation and tracking entirely.
+2. Uses typed `Field.getXxx` getters for primitive fields (no boxing).
+3. Dispatches on `FieldType` enum directly (no `instanceof` chain per field value).
+4. Pre-grows `StringBuilder` via `ensureCapacity` per object.
+5. Writes date values (`LocalDate`, `Instant`) directly without intermediate `DateCodec.serialize` call.
+6. Uses a lazy `IdentityHashMap` — only allocated when `failOnCycles=true`.
+
+The fast path activates for top-level objects, lists, and maps when:
+- `failOnCycles` is false (default)
+- `prettyPrint` is false (default)
+- `includeNulls` is false (default)
+- `maxDepth` is 128 (default)
+
+### Batch-Copy String Escaping
+
+The string escaper (`JsonWriter.escapeString`) uses batch-copy for runs of safe characters within the escape loop. After processing an escape sequence, it scans forward for the next unsafe character and appends the entire safe run with a single `StringBuilder.append(s, start, end)` call. Pre-computed unicode escape strings (`UNICODE_ESCAPES[]`) replace 6 individual `append()` calls per control character.
 
 ---
 
@@ -307,30 +344,30 @@ The comparison benchmark includes a setup-time correctness check. It verifies th
 
 ### Recent Local Benchmark Run
 
-These numbers were measured locally on May 1, 2026 using:
+These numbers were measured locally on May 4, 2026 using:
 
 - Apple M4, arm64.
-- Temurin JDK 21.0.11.
-- Command: `mvn -Pbenchmark exec:exec -Djmh.args='JsonLibraryComparisonBenchmark -wi 5 -i 5 -f 2'`.
-- JMH: average time, microseconds/op, 5 warmup iterations, 5 measurement iterations, 2 forks.
+- Temurin JDK 17.
+- Command: `mvn -Pbenchmark exec:exec -Djmh.args='JsonLibraryComparisonBenchmark.<benchmark> -wi 10 -i 10 -f 3'`.
+- JMH: average time, microseconds/op, 10 warmup iterations, 10 measurement iterations, 3 forks.
 
 Lower is better. Results with **bold** indicate KissJson is faster than Jackson in that scenario.
 
 | Scenario | KissJson | Jackson | Ratio |
 |---|---:|---:|---:|
-| **Serialize simple POJO** | 0.169 | 0.195 | **0.87x** |
-| Deserialize simple POJO | 0.293 | 0.310 | **0.94x** |
-| Serialize nested POJO | 0.251 | 0.199 | 1.26x |
-| Deserialize nested POJO | 0.431 | 0.368 | 1.17x |
-| Serialize date POJO | 0.307 | 0.264 | 1.16x |
-| Deserialize date POJO | 0.811 | 0.816 | **0.99x** |
-| **Serialize list of 100 POJOs** | 12.300 | 12.491 | **0.98x** |
-| Deserialize list of 100 POJOs | 27.080 | 22.961 | 1.18x |
-| Stringify map | 0.208 | 0.210 | **0.99x** |
-| **Parse map** | 0.281 | 0.354 | **0.79x** |
-| Escape string | 0.608 | 0.460 | 1.32x |
+| **Serialize simple POJO** | **0.107** | 0.135 | **0.79x** |
+| **Deserialize simple POJO** | **0.147** | 0.196 | **0.75x** |
+| Serialize nested POJO | 0.154 | **0.130** | 1.18x |
+| **Deserialize nested POJO** | **0.180** | 0.235 | **0.77x** |
+| **Serialize date POJO** | **0.174** | 0.174 | **1.00x** |
+| **Deserialize date POJO** | **0.532** | 0.563 | **0.94x** |
+| **Serialize list of 100 POJOs** | **7.986** | 8.694 | **0.92x** |
+| **Deserialize list of 100 POJOs** | **14.432** | 14.738 | **0.98x** |
+| **Stringify map** | **0.122** | 0.135 | **0.90x** |
+| **Parse map** | **0.185** | 0.245 | **0.76x** |
+| **Escape string** | **0.258** | 0.294 | **0.88x** |
 
-KissJson is faster than Jackson on simple POJO serialization/deserialization, date POJO deserialization, list of 100 POJO serialization, map serialization, and map parsing. The remaining gaps are in nested POJO handling and string escaping.
+KissJson is faster than Jackson on 9 of 11 benchmarks, ties on 1 (serialize date POJO), and is 18% slower on serialize nested POJO. That gap reflects the fundamental overhead of reflection-based field access vs Jackson's ahead-of-time compiled `BeanPropertyWriter`.
 
 For detailed benchmark methodology and historical comparisons, see [Benchmarks](BENCHMARKS.html).
 
