@@ -206,7 +206,7 @@ final class JsonReader {
         }
         String key = stringValue;
         for (int n = 0; n < names.length; n++) {
-            if (key == names[n] || key.equals(names[n])) {
+            if (key.equals(names[n])) {
                 nextToken();
                 consume(JsonTokenType.COLON);
                 return n;
@@ -285,7 +285,6 @@ final class JsonReader {
         if (current != JsonTokenType.STRING) {
             throw parseError("Expected string for object key but was " + current);
         }
-        String key = stringValue;
         nextToken();
         consume(JsonTokenType.COLON);
     }
