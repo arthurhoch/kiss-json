@@ -77,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed benchmark profile compilation by adding generated JMH annotation sources to the test source roots.
 - Aligned `@JsonRequired` enforcement with `failOnMissingRequiredFields`.
 - Fixed non-BMP Unicode and `\uXXXX` surrogate-pair parsing/serialization.
 - Fixed max-depth checks to fail only when nesting exceeds the configured limit.
