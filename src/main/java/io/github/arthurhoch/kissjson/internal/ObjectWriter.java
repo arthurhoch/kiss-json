@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 final class ObjectWriter {
 
     private static final String[] INDENT_CACHE;
+    private static final Map<Class<?>, FieldModel.FieldType> VALUE_TYPE_MAP;
 
     static {
         INDENT_CACHE = new String[33];
@@ -25,6 +27,18 @@ final class ObjectWriter {
             INDENT_CACHE[i] = sb.toString();
             sb.append("  ");
         }
+        Map<Class<?>, FieldModel.FieldType> m = new HashMap<>(16);
+        m.put(String.class, FieldModel.FieldType.STRING);
+        m.put(Boolean.class, FieldModel.FieldType.BOOLEAN);
+        m.put(Integer.class, FieldModel.FieldType.INT);
+        m.put(Long.class, FieldModel.FieldType.LONG);
+        m.put(Short.class, FieldModel.FieldType.SHORT);
+        m.put(Byte.class, FieldModel.FieldType.BYTE);
+        m.put(Double.class, FieldModel.FieldType.DOUBLE);
+        m.put(Float.class, FieldModel.FieldType.FLOAT);
+        m.put(BigDecimal.class, FieldModel.FieldType.BIG_DECIMAL);
+        m.put(BigInteger.class, FieldModel.FieldType.BIG_INTEGER);
+        VALUE_TYPE_MAP = Map.copyOf(m);
     }
 
     private final StringBuilder out;
@@ -406,30 +420,30 @@ final class ObjectWriter {
     }
 
     private void writeFastValueFallback(Object value, FieldModel fm) {
-        if (value instanceof String s) {
-            JsonWriter.escapeString(s, out);
-        } else if (value instanceof Boolean b) {
-            out.append(b ? "true" : "false");
-        } else if (value instanceof Integer || value instanceof Long || value instanceof Short || value instanceof Byte) {
-            out.append(((Number) value).longValue());
-        } else if (value instanceof Double) {
-            out.append(((Double) value).doubleValue());
-        } else if (value instanceof Float) {
-            out.append(((Float) value).floatValue());
-        } else if (value instanceof BigDecimal bd) {
-            out.append(bd.toPlainString());
-        } else if (value instanceof BigInteger bi) {
-            out.append(bi.toString());
-        } else if (value instanceof Enum<?> e) {
-            String str = enumMode == EnumMode.TO_STRING ? e.toString() : e.name();
-            JsonWriter.escapeString(str, out);
-        } else if (value instanceof Number n) {
-            out.append(n.toString());
-        } else if (DateCodec.isDateType(value.getClass())) {
-            String result = DateCodec.serialize(value, config.dateFormat(), config.zoneId(), fm != null ? fm.dateFormat() : null);
-            JsonWriter.escapeString(result, out);
-        } else {
-            writeFastObject(value);
+        FieldModel.FieldType ft = VALUE_TYPE_MAP.get(value.getClass());
+        if (ft == null) {
+            if (value instanceof Enum<?> e) {
+                String str = enumMode == EnumMode.TO_STRING ? e.toString() : e.name();
+                JsonWriter.escapeString(str, out);
+            } else if (value instanceof Number n) {
+                out.append(n.toString());
+            } else if (DateCodec.isDateType(value.getClass())) {
+                String result = DateCodec.serialize(value, config.dateFormat(), config.zoneId(), fm != null ? fm.dateFormat() : null);
+                JsonWriter.escapeString(result, out);
+            } else {
+                writeFastObject(value);
+            }
+            return;
+        }
+        switch (ft) {
+            case STRING -> JsonWriter.escapeString((String) value, out);
+            case BOOLEAN -> out.append((Boolean) value ? "true" : "false");
+            case INT, LONG, SHORT, BYTE -> out.append(((Number) value).longValue());
+            case DOUBLE -> out.append(((Double) value).doubleValue());
+            case FLOAT -> out.append(((Float) value).floatValue());
+            case BIG_DECIMAL -> out.append(((BigDecimal) value).toPlainString());
+            case BIG_INTEGER -> out.append(((BigInteger) value).toString());
+            default -> writeFastObject(value);
         }
     }
 
