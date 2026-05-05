@@ -1,6 +1,6 @@
 # Getting Started
 
-> **Note:** This document describes the current v1 API for `0.1.0-SNAPSHOT`.
+> **Note:** This document describes the current v1 API for `0.1.0`.
 
 ---
 
@@ -12,20 +12,20 @@
 <dependency>
   <groupId>io.github.arthurhoch</groupId>
   <artifactId>kiss-json</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
 ### Gradle (Kotlin DSL)
 
 ```kotlin
-implementation("io.github.arthurhoch:kiss-json:0.1.0-SNAPSHOT")
+implementation("io.github.arthurhoch:kiss-json:0.1.0")
 ```
 
 ### Gradle (Groovy DSL)
 
 ```groovy
-implementation 'io.github.arthurhoch:kiss-json:0.1.0-SNAPSHOT'
+implementation 'io.github.arthurhoch:kiss-json:0.1.0'
 ```
 
 KissJson has **zero dependencies** — nothing else is needed.

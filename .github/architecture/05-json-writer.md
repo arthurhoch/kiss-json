@@ -295,4 +295,4 @@ The indent string is repeated `indentLevel` times. Default: `"  "` (two spaces).
 
 ## Status
 
-This document describes the **current v1 contract** for the JSON writer. The writer is an internal component implemented for `0.1.0-SNAPSHOT`.
+This document describes the **current v1 contract** for the JSON writer. The writer is an internal component implemented for `0.1.0`.

@@ -1,6 +1,6 @@
 # 13 — GitHub Pages Architecture
 
-> **Status:** Current GitHub Pages architecture for `0.1.0-SNAPSHOT`.
+> **Status:** Current GitHub Pages architecture for `0.1.0`.
 
 ## Overview
 

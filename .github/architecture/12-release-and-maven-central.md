@@ -1,6 +1,6 @@
 # 12 — Release and Maven Central Architecture
 
-> **Status:** Current release architecture for `0.1.0-SNAPSHOT`.
+> **Status:** Current release architecture for `0.1.0`.
 
 ## Overview
 
@@ -21,7 +21,7 @@ KissJson uses **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`
 During development, the version in `pom.xml` uses the `-SNAPSHOT` suffix:
 
 ```xml
-<version>0.1.0-SNAPSHOT</version>
+<version>X.Y.Z-SNAPSHOT</version>
 ```
 
 Snapshot versions are **not published** to Maven Central. They exist only in the local build and are used during development.
@@ -31,17 +31,17 @@ Snapshot versions are **not published** to Maven Central. They exist only in the
 Release versions have **no suffix**:
 
 ```xml
-<version>0.1.0</version>
+<version>X.Y.Z</version>
 ```
 
 ### Version Bump Flow
 
 ```
-0.1.0-SNAPSHOT  (development)
+X.Y.Z-SNAPSHOT  (development)
     │
-    ├── Tag: v0.1.0  →  Release workflow  →  Publish 0.1.0
+    ├── Tag: vX.Y.Z  →  Release workflow  →  Publish X.Y.Z
     │
-    └── Bump to 0.1.1-SNAPSHOT  (next development cycle)
+    └── Bump to next X.Y.Z-SNAPSHOT  (next development cycle)
 ```
 
 1. Develop at `X.Y.Z-SNAPSHOT`.
@@ -67,7 +67,7 @@ KissJson uses the **Sonatype Central Publisher Portal** (the modern replacement 
 <plugin>
     <groupId>org.sonatype.central</groupId>
     <artifactId>central-publishing-maven-plugin</artifactId>
-    <version>0.7.0</version>
+    <version>0.10.0</version>
     <extensions>true</extensions>
     <configuration>
         <publishingServerId>central</publishingServerId>

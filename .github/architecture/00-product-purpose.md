@@ -133,4 +133,4 @@ The library must be forgiving by default and strict only when explicitly configu
 
 ## Status
 
-This document describes the **current v1 contract** for `0.1.0-SNAPSHOT`.
+This document describes the **current v1 contract** for `0.1.0`.

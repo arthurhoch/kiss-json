@@ -1,6 +1,6 @@
 # 11 — Documentation Policy
 
-> **Status:** Current documentation policy for `0.1.0-SNAPSHOT`.
+> **Status:** Current documentation policy for `0.1.0`.
 
 ## Overview
 

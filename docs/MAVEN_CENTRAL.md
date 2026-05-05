@@ -97,10 +97,10 @@ Remove the `-SNAPSHOT` suffix from the version in `pom.xml`:
 
 ```xml
 <!-- Before -->
-<version>0.1.0-SNAPSHOT</version>
+<version>X.Y.Z-SNAPSHOT</version>
 
 <!-- After -->
-<version>0.1.0</version>
+<version>X.Y.Z</version>
 ```
 
 ### Step 2: Update CHANGELOG.md
@@ -108,7 +108,7 @@ Remove the `-SNAPSHOT` suffix from the version in `pom.xml`:
 Rename the `[Unreleased]` section to the version with the date:
 
 ```markdown
-## [0.1.0] - 2026-04-29
+## [0.1.0] - 2026-05-05
 
 ### Added
 - Initial release of KissJson.

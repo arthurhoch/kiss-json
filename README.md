@@ -14,7 +14,7 @@ Do not publish a functional release until implementation and tests are complete.
 <dependency>
     <groupId>io.github.arthurhoch</groupId>
     <artifactId>kiss-json</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 

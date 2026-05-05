@@ -1,6 +1,6 @@
 # 10 — Testing Strategy
 
-> **Status:** Current v1 testing contract for `0.1.0-SNAPSHOT`.
+> **Status:** Current v1 testing contract for `0.1.0`.
 
 ## Overview
 

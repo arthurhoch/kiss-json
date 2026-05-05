@@ -25,4 +25,4 @@ Read these files sequentially:
 
 ## Status
 
-All architecture documents describe the **current v1 contract** for `0.1.0-SNAPSHOT`. Implementation and release-hardening work must follow these documents. If a document is ambiguous, clarify before implementing.
+All architecture documents describe the **current v1 contract** for `0.1.0`. Implementation and release-hardening work must follow these documents. If a document is ambiguous, clarify before implementing.

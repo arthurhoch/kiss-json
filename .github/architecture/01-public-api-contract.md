@@ -1,6 +1,6 @@
 # 01 — Public API Contract
 
-This document defines the **current v1 public API** for KissJson `0.1.0-SNAPSHOT`.
+This document defines the **current v1 public API** for KissJson `0.1.0`.
 
 ## Package
 
@@ -374,4 +374,4 @@ Users interact only with the classes, enums, and annotations defined above.
 
 ## Status
 
-This document describes the **current v1 contract**. All types and methods listed here are implemented for `0.1.0-SNAPSHOT` and remain subject to release hardening.
+This document describes the **current v1 contract**. All types and methods listed here are implemented for `0.1.0`.

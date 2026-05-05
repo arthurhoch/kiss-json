@@ -467,4 +467,4 @@ This rule is absolute and non-negotiable:
 
 ## Status
 
-This document describes the **current v1 contract** for object mapping in `0.1.0-SNAPSHOT`.
+This document describes the **current v1 contract** for object mapping in `0.1.0`.

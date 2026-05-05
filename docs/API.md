@@ -1,6 +1,6 @@
 # API Reference
 
-> **Note:** All API described below is the current v1 contract for `0.1.0-SNAPSHOT`.
+> **Note:** All API described below is the current v1 contract for `0.1.0`.
 
 All public API lives in the package `io.github.arthurhoch.kissjson`.
 
@@ -511,4 +511,4 @@ Specifies a custom date format pattern for a specific field. Overrides the globa
 
 ---
 
-*All API described above is the current v1 contract for `0.1.0-SNAPSHOT`.*
+*All API described above is the current v1 contract for `0.1.0`.*

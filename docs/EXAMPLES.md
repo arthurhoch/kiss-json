@@ -1,6 +1,6 @@
 # Examples
 
-> **Note:** All examples below demonstrate the current v1 API for `0.1.0-SNAPSHOT`.
+> **Note:** All examples below demonstrate the current v1 API for `0.1.0`.
 
 ---
 
@@ -947,4 +947,4 @@ User user = json.parse(text, User.class);
 
 ---
 
-*All examples above demonstrate the current v1 API for `0.1.0-SNAPSHOT`.*
+*All examples above demonstrate the current v1 API for `0.1.0`.*

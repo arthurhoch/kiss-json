@@ -1,6 +1,6 @@
 # Configuration
 
-> **Note:** This document describes the current v1 configuration options for `0.1.0-SNAPSHOT`.
+> **Note:** This document describes the current v1 configuration options for `0.1.0`.
 
 All configuration is done through the `JsonBuilder` fluent API:
 
@@ -508,4 +508,4 @@ Annotations override global configuration at the field level:
 
 ---
 
-*All configuration options described above are the current v1 contract for `0.1.0-SNAPSHOT`.*
+*All configuration options described above are the current v1 contract for `0.1.0`.*

@@ -54,7 +54,7 @@ KissJson uses the **[Keep a Changelog](https://keepachangelog.com/)** format.
 ### Fixed
 - Fix description.
 
-## [0.1.0] - 2026-04-29
+## [0.1.0] - 2026-05-05
 
 ### Added
 - Initial release.
@@ -97,10 +97,10 @@ Remove the `-SNAPSHOT` suffix:
 
 ```xml
 <!-- Before -->
-<version>0.1.0-SNAPSHOT</version>
+<version>X.Y.Z-SNAPSHOT</version>
 
 <!-- After -->
-<version>0.1.0</version>
+<version>X.Y.Z</version>
 ```
 
 ### 2. Update CHANGELOG.md
@@ -108,7 +108,7 @@ Remove the `-SNAPSHOT` suffix:
 Rename `[Unreleased]` to the version with today's date:
 
 ```markdown
-## [0.1.0] - 2026-04-29
+## [0.1.0] - 2026-05-05
 
 ### Added
 - Initial release of KissJson.

@@ -1,7 +1,7 @@
 # Implementation Plan
 
 > Phased implementation plan for KissJson v1. Each phase is designed to be a small, testable increment.
-> Current status: an initial v1 implementation exists for `0.1.0-SNAPSHOT`; this roadmap remains as the historical phase breakdown and should be reconciled as hardening continues.
+> Current status: initial v1 release is `0.1.0`; this roadmap remains as the historical phase breakdown for future maintenance.
 > Current hardening direction: typed deserialization uses a token-to-object fast path (`JsonReader` -> `ObjectReader`) rather than building a `JsonValue` tree.
 
 ---

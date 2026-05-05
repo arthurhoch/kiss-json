@@ -262,4 +262,4 @@ Typed object deserialization consumes tokens directly and never exposes tokens o
 
 ## Status
 
-This document describes the **current v1 contract** for the JSON parser. The parser is an internal component implemented for `0.1.0-SNAPSHOT`.
+This document describes the **current v1 contract** for the JSON parser. The parser is an internal component implemented for `0.1.0`.

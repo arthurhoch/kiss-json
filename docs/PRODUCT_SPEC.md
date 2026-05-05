@@ -2,7 +2,7 @@
 
 > **Status:** This document is the authoritative specification for KissJson v1.
 > All features described here are the current v1 contract unless explicitly marked otherwise.
-> Initial implementation exists for `0.1.0-SNAPSHOT`; see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for the original phased roadmap.
+> Initial v1 release is `0.1.0`; see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for the original phased roadmap.
 
 ---
 

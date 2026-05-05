@@ -348,4 +348,4 @@ The recommended usage pattern is to create one `Json` instance (or use `Json.cre
 
 ## Status
 
-This document describes the **current v1 contract** for internal architecture in `0.1.0-SNAPSHOT`.
+This document describes the **current v1 contract** for internal architecture in `0.1.0`.

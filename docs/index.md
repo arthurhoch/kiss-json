@@ -9,7 +9,7 @@ A tiny, high-performance, zero-dependency Java 17+ JSON library.
 
 KissJson serializes Java objects to JSON and deserializes JSON to normal Java objects using **fields directly** — no getters, no setters, no framework magic.
 
-> **Status:** Initial v1 implementation is present for `0.1.0-SNAPSHOT` and is under release hardening.
+> **Status:** Initial v1 release is `0.1.0`.
 
 ## Maven Dependency
 
@@ -17,7 +17,7 @@ KissJson serializes Java objects to JSON and deserializes JSON to normal Java ob
 <dependency>
   <groupId>io.github.arthurhoch</groupId>
   <artifactId>kiss-json</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 

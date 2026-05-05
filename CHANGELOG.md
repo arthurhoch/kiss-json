@@ -5,7 +5,7 @@ All notable changes to KissJson will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0-SNAPSHOT] - Unreleased
+## [0.1.0] - 2026-05-05
 
 ### Changed
 
@@ -67,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced hot-path JSON path string concatenation in object mapping and serialization with mutable internal path builders that materialize strings only for exceptions.
 - Avoided per-object alias tracking allocation for classes without `@JsonAliases`.
 - Avoided numeric scanning for ISO date/time serialization output.
+- Updated the Sonatype Central Publishing Maven plugin used by the release profile.
 
 ### Added
 
@@ -88,4 +89,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rejected non-string map keys during JSON object serialization.
 - Threaded `JsonConfig` through an internal simple-POJO list fallback path found by SpotBugs.
 
-[0.1.0-SNAPSHOT]: https://github.com/arthurhoch/kiss-json/tree/main
+[0.1.0]: https://github.com/arthurhoch/kiss-json/releases/tag/v0.1.0
