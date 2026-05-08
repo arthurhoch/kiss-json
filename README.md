@@ -15,8 +15,6 @@ Part of the KISS Java Libraries family: small, explicit, zero-dependency Java 17
 
 Latest stable release: `0.1.0`.
 
-Current development version: `0.1.1-SNAPSHOT`.
-
 The `0.1.0` artifact is published on Maven Central and the `v0.1.0` GitHub release is available.
 
 ## Why this exists

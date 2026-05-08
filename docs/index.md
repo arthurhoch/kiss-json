@@ -11,7 +11,7 @@ Part of the KISS Java Libraries family.
 
 KissJson serializes Java objects to JSON and deserializes JSON to normal Java objects using **fields directly**: no getters, no setters, no framework magic.
 
-> **Status:** Latest stable release is `0.1.0`; current development version is `0.1.1-SNAPSHOT`.
+> **Status:** Latest stable release is `0.1.0`.
 
 ## Install
 

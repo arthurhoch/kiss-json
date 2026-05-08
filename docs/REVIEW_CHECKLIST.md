@@ -182,9 +182,9 @@ Use this checklist before publishing to Maven Central for the first time.
 
 ### Post-Release
 
-- [ ] Version in `pom.xml` bumped to next `-SNAPSHOT` (e.g., `0.1.1-SNAPSHOT`).
+- [ ] Version in `pom.xml` bumped to next `-SNAPSHOT`.
 - [ ] `CHANGELOG.md` has a new `[Unreleased]` section at the top.
-- [ ] Changes committed and pushed: `git commit -m "Bump to 0.1.1-SNAPSHOT" && git push origin main`.
+- [ ] Changes committed and pushed with a clear next-development-version message.
 
 ---
 

@@ -21,7 +21,7 @@ KissJson follows **Semantic Versioning** (semver): `MAJOR.MINOR.PATCH`.
 During development, the version in `pom.xml` carries a `-SNAPSHOT` suffix:
 
 ```xml
-<version>0.1.1-SNAPSHOT</version>
+<version>NEXT-SNAPSHOT</version>
 ```
 
 - `-SNAPSHOT` indicates unreleased, in-development code.
@@ -162,7 +162,7 @@ After the release workflow succeeds and the artifact is on Maven Central:
 ### 1. Bump Version to Next SNAPSHOT
 
 ```xml
-<version>0.1.1-SNAPSHOT</version>
+<version>NEXT-SNAPSHOT</version>
 ```
 
 ### 2. Add New Unreleased Section to CHANGELOG.md
@@ -179,7 +179,7 @@ After the release workflow succeeds and the artifact is on Maven Central:
 
 ```bash
 git add pom.xml CHANGELOG.md
-git commit -m "Bump to 0.1.1-SNAPSHOT"
+git commit -m "Bump to next development version"
 git push origin main
 ```
 
