@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Maven Central Publication Guide
 
 > **Release guide.** Version `0.1.0` is published on Maven Central. Future releases must still complete implementation, tests, docs, and release validation before publishing.

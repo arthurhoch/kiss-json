@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # API Reference
 
 > **Note:** All API described below is the current v1 contract for `0.1.0`.

@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Security Hardening
 
 KissJson uses free GitHub-native and open-source checks. Normal CI, CodeQL, Dependency Review, Dependabot, Semgrep, and OpenSSF Scorecard do not require repository secrets.

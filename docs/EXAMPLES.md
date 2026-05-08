@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Examples
 
 > **Note:** All examples below demonstrate the current v1 API for `0.1.0`.

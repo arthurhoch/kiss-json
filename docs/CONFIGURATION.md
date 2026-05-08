@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Configuration
 
 > **Note:** This document describes the current v1 configuration options for `0.1.0`.

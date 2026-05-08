@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Performance
 
 > **Current v1 contract.** This document describes the performance strategy and design decisions for KissJson v1.

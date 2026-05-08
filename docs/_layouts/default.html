@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ site.description | default: page.description | escape }}">
+  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/kiss.css' | relative_url }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="{{ '/' | relative_url }}"><span>KISS</span>{{ site.title }}</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="{{ '/' | relative_url }}">Docs</a>
+        {% if site.maven_url %}<a href="{{ site.maven_url }}">Maven Central</a>{% endif %}
+        {% if site.repo_url %}<a href="{{ site.repo_url }}">GitHub</a>{% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    {{ content }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>{{ site.title }} is part of the KISS Java Libraries family.</span>
+      <span>Java 17+ · Apache-2.0 · Zero production dependencies where the library contract allows it.</span>
+    </div>
+  </footer>
+</body>
+</html>

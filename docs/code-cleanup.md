@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Safe Code Cleanup
 
 KissJson is published as a small Java 17 library, so cleanup must protect the public API and release compatibility. This document explains how to identify unused code safely before any deletion.

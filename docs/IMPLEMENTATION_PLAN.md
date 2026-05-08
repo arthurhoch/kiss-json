@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Implementation Plan
 
 > Phased implementation plan for KissJson v1. Each phase is designed to be a small, testable increment.

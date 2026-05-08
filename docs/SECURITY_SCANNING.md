@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Security Scanning
 
 KissJson keeps security tooling useful but isolated. The default developer build stays fast and does not download vulnerability databases:

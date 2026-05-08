@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Error Handling
 
 > **Current v1 contract.** This document describes the error handling behavior for KissJson `0.1.0`.

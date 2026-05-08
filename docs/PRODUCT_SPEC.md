@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # KissJson Product Specification
 
 > **Status:** This document is the authoritative specification for KissJson v1.

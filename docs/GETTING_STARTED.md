@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Getting Started
 
 > **Note:** This document describes the current v1 API for `0.1.0`.

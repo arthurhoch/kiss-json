@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # AI Usage Guide
 
 This page gives AI coding agents and maintainers a compact user-facing guide for using KissJson correctly in consumer projects. It does not replace `AGENTS.md`, `CAVEMAN.md`, `docs/PRODUCT_SPEC.md`, or `.github/architecture/index.md` for changes to this repository.

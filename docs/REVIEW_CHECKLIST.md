@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 # Review Checklist
 
 > Checklists for implementation, release, and publication of KissJson.

@@ -3,108 +3,88 @@ layout: default
 title: KissJson
 ---
 
-# KissJson
+<section class="hero">
+  <div>
+    <p class="eyebrow">KISS Java Libraries</p>
+    <h1>KissJson</h1>
+    <p class="lead">Tiny zero-dependency Java 17+ JSON serialization and deserialization with direct field mapping, explicit configuration, and useful parse errors.</p>
+    <div class="meta-row">
+      <span class="tag">Latest stable: 0.1.0</span>
+      <span class="tag">Java 17+</span>
+      <span class="tag">Apache-2.0</span>
+    </div>
+    <div class="actions">
+      <a class="button" href="GETTING_STARTED.html">Getting Started</a>
+      <a class="button secondary" href="API.html">API Reference</a>
+      <a class="button secondary" href="https://github.com/arthurhoch/kiss-json">GitHub</a>
+    </div>
+  </div>
+  <div class="panel">
+    <p class="panel-title">Maven</p>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;io.github.arthurhoch&lt;/groupId&gt;
+  &lt;artifactId&gt;kiss-json&lt;/artifactId&gt;
+  &lt;version&gt;0.1.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+  </div>
+</section>
 
-Tiny zero-dependency Java 17+ JSON library for field-based serialization and deserialization.
-
-Part of the KISS Java Libraries family.
-
-KissJson serializes Java objects to JSON and deserializes JSON to normal Java objects using **fields directly**: no getters, no setters, no framework magic.
-
-> **Status:** Latest stable release is `0.1.0`.
-
-## Install
-
-```xml
-<dependency>
-  <groupId>io.github.arthurhoch</groupId>
-  <artifactId>kiss-json</artifactId>
-  <version>0.1.0</version>
-</dependency>
-```
-
-## Quick Example
-
-```java
-import io.github.arthurhoch.kissjson.Json;
-
-public class User {
-    String name;
-    int age;
-    boolean active;
-}
-
-// Serialize
-Json json = Json.create();
-User user = new User();
-user.name = "Alice";
-user.age = 30;
-user.active = true;
+<section class="section two-column">
+  <div>
+    <h2>Small Surface</h2>
+    <p>KissJson maps fields directly without getters, setters, runtime plugins, or transitive dependencies. The API is intended to be easy to remember and easy to inspect.</p>
+  </div>
+  <div class="panel">
+    <p class="panel-title">Quick Example</p>
+<pre><code>Json json = Json.create();
 String text = json.stringify(user);
-// {"name":"Alice","age":30,"active":true}
+User parsed = json.parse(text, User.class);</code></pre>
+  </div>
+</section>
 
-// Deserialize
-User parsed = json.parse(text, User.class);
-// parsed.name == "Alice", parsed.age == 30, parsed.active == true
-```
+<section class="section">
+  <h2>KISS Principles</h2>
+  <div class="feature-grid">
+    <article class="feature">
+      <h3>Zero Dependencies</h3>
+      <p>The production artifact stays independent of external JSON frameworks.</p>
+    </article>
+    <article class="feature">
+      <h3>Explicit Mapping</h3>
+      <p>Field names, null handling, dates, enums, aliases, and required fields are configured directly.</p>
+    </article>
+    <article class="feature">
+      <h3>Readable Failures</h3>
+      <p>Parse and mapping errors include path, line, column, and cause context.</p>
+    </article>
+  </div>
+</section>
 
-## Why KissJson?
+<section class="section">
+  <h2>Documentation</h2>
+  <div class="doc-grid">
+    <a href="GETTING_STARTED.html">Getting Started<span>Install and first JSON round trip.</span></a>
+    <a href="API.html">API Reference<span>Public API and annotations.</span></a>
+    <a href="EXAMPLES.html">Examples<span>Copyable examples for common cases.</span></a>
+    <a href="CONFIGURATION.html">Configuration<span>Builder options and behavior switches.</span></a>
+    <a href="ERROR_HANDLING.html">Error Handling<span>Exception hierarchy and debug context.</span></a>
+    <a href="PERFORMANCE.html">Performance<span>Performance strategy and expectations.</span></a>
+    <a href="BENCHMARKS.html">Benchmarks<span>JMH benchmark methodology and results.</span></a>
+    <a href="SECURITY_SCANNING.html">Security Scanning<span>CodeQL, Semgrep, Dependabot, OWASP, and SpotBugs.</span></a>
+    <a href="security-hardening.html">Security Hardening<span>Repository hardening and local quality commands.</span></a>
+    <a href="code-cleanup.html">Safe Code Cleanup<span>Deletion policy and quality gates.</span></a>
+    <a href="TESTING_REPORT.html">Testing Report<span>Current verification state.</span></a>
+    <a href="RELEASE.html">Release<span>Release process and Maven Central flow.</span></a>
+  </div>
+</section>
 
-- **Tiny** — zero dependencies, small jar
-- **Fast** — metadata caching, direct writing, token-based parsing
-- **Simple** — field-based mapping, no getters/setters required
-- **Safe** — rich errors with path, line, column, and cause context
-- **Modern** — Java 17+, no legacy baggage
-
-## Core Features
-
-- Field-based object serialization and deserialization.
-- Primitives, wrappers, strings, numbers, dates, enums, arrays, lists, maps, nested objects, and nulls.
-- Annotations for names, aliases, ignored fields, required fields, null inclusion/exclusion, and date format.
-- Configurable naming, null handling, unknown-property handling, duplicate-key handling, depth limits, cycle handling, pretty print, dates, and enums.
-- JMH benchmark profile and published benchmark methodology.
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Product Spec](PRODUCT_SPEC.html) | Authoritative v1 specification |
-| [Getting Started](GETTING_STARTED.html) | Quick-start guide with copyable examples |
-| [AI Usage](AI_USAGE.html) | User-facing AI usage guide for consumer projects |
-| [API Reference](API.html) | Public API documentation |
-| [Examples](EXAMPLES.html) | Complete examples for all v1 behaviors |
-| [Configuration](CONFIGURATION.html) | All builder options documented |
-| [Error Handling](ERROR_HANDLING.html) | Exception hierarchy and rich errors |
-| [Performance](PERFORMANCE.html) | Performance design and expectations |
-| [Benchmarks](BENCHMARKS.html) | JMH benchmark results vs Jackson |
-| [Security Scanning](SECURITY_SCANNING.html) | CodeQL, Semgrep, Dependabot, OWASP, SpotBugs, and optional Snyk |
-| [Security Hardening](security-hardening.html) | CodeQL build, Dependency Review, OpenSSF Scorecard, and manual GitHub setup |
-| [Testing Report](TESTING_REPORT.html) | Current verification results and known limits |
-| [Safe Code Cleanup](code-cleanup.html) | Coverage, quality checks, and deletion policy |
-| [Implementation Plan](IMPLEMENTATION_PLAN.html) | Phased implementation roadmap |
-| [Review Checklist](REVIEW_CHECKLIST.html) | Pre-release review checklist |
-| [Maven Central](MAVEN_CENTRAL.html) | Publishing to Maven Central |
-| [Release](RELEASE.html) | Release process |
-
-## Related KISS Projects
-
-These libraries are independent, zero-dependency Java 17+ projects. Use only the modules you need.
-
-| Project | Purpose |
-|---|---|
-| [kiss-json](https://github.com/arthurhoch/kiss-json) | Field-based JSON serialization and deserialization. |
-| [kiss-requests](https://github.com/arthurhoch/kiss-requests) | Simple HTTP client built on Java HttpClient. |
-| [kiss-server](https://github.com/arthurhoch/kiss-server) | Small HTTP/1.1 server for simple REST-style applications. |
-| [kiss-config](https://github.com/arthurhoch/kiss-config) | Configuration loading from properties, .env files, system properties, and environment variables. |
-| [kiss-binary](https://github.com/arthurhoch/kiss-binary) | Explicit binary IO for primitive binary formats. |
-
-## Links
-
-- [GitHub](https://github.com/arthurhoch/kiss-json)
-- [Maven Central](https://central.sonatype.com/artifact/io.github.arthurhoch/kiss-json)
-- [Changelog](https://github.com/arthurhoch/kiss-json/blob/main/CHANGELOG.md)
-- [Security Policy](https://github.com/arthurhoch/kiss-json/blob/main/SECURITY.md)
-
-## License
-
-KissJson is open source. See the repository for license details.
+<section class="section">
+  <h2>Related Projects</h2>
+  <div class="related-grid">
+    <a href="https://github.com/arthurhoch/kiss-json">kiss-json<span>Field-based JSON serialization and deserialization.</span></a>
+    <a href="https://github.com/arthurhoch/kiss-requests">kiss-requests<span>Simple HTTP client built on Java HttpClient.</span></a>
+    <a href="https://github.com/arthurhoch/kiss-server">kiss-server<span>Small HTTP/1.1 server for simple REST-style applications.</span></a>
+    <a href="https://github.com/arthurhoch/kiss-config">kiss-config<span>Configuration from properties, .env, system properties, and environment variables.</span></a>
+    <a href="https://github.com/arthurhoch/kiss-binary">kiss-binary<span>Explicit binary IO for primitive binary formats.</span></a>
+  </div>
+</section>
