@@ -10,6 +10,8 @@ Manual index of every markdown file in the KissJson repository and its purpose.
 | `CAVEMAN.md` | Compact low-token summary for AI agents and maintainers |
 | `AGENTS.md` | Primary AI coding agent instructions |
 | `CHANGELOG.md` | Version history in Keep a Changelog format |
+| `CODE_OF_CONDUCT.md` | Community conduct expectations |
+| `CONTRIBUTING.md` | Contribution rules and local checks |
 | `SECURITY.md` | Security policy: disclosure, zero-dep policy, scanning summary, no secrets |
 
 ## `.github/`
@@ -48,12 +50,14 @@ Manual index of every markdown file in the KissJson repository and its purpose.
 | `docs/_config.yml` | Jekyll configuration |
 | `docs/PRODUCT_SPEC.md` | Authoritative product specification |
 | `docs/GETTING_STARTED.md` | Quick-start guide with copyable examples |
+| `docs/AI_USAGE.md` | User-facing AI usage guidance for consumer projects |
 | `docs/API.md` | Public API reference |
 | `docs/EXAMPLES.md` | Complete usage examples |
 | `docs/CONFIGURATION.md` | Builder and configuration options |
 | `docs/ERROR_HANDLING.md` | Error handling and exception reference |
 | `docs/PERFORMANCE.md` | Performance strategy and benchmark plan |
 | `docs/SECURITY_SCANNING.md` | Security scanning setup for CodeQL, Dependabot, Semgrep, OWASP, SpotBugs, and optional Snyk |
+| `docs/TESTING_REPORT.md` | Current verification report and known limits |
 | `docs/IMPLEMENTATION_PLAN.md` | Phased implementation plan |
 | `docs/REVIEW_CHECKLIST.md` | Pre-implementation, pre-release, pre-publish checklists |
 | `docs/MAVEN_CENTRAL.md` | Maven Central publication guide |

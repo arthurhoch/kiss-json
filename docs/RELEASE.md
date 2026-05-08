@@ -1,6 +1,6 @@
 # Release Process
 
-> **Release hardening guide.** Do not publish a functional release until implementation, tests, docs, and release validation are complete.
+> **Release guide.** Version `0.1.0` is published on Maven Central. Future releases must complete implementation, tests, docs, and release validation before publishing.
 
 This document describes the versioning, changelog, and release process for KissJson.
 
@@ -30,7 +30,7 @@ During development, the version in `pom.xml` carries a `-SNAPSHOT` suffix:
 
 ### Initial Release
 
-The first release will be `0.1.0`. The `0.x.x` range indicates that the API is not yet stable and may change between minor versions. Once the API is considered stable, release `1.0.0`.
+The first release was `0.1.0`. The `0.x.x` range indicates that the API is not yet stable and may change between minor versions. Once the API is considered stable, release `1.0.0`.
 
 ---
 
@@ -185,13 +185,13 @@ git push origin main
 
 ---
 
-## Do Not Publish Early
+## Do Not Publish Future Releases Early
 
 > **Do not publish a functional release to Maven Central until implementation and tests are complete.**
 >
 > Once an artifact is published to Maven Central, it cannot be deleted or replaced (only superseded by a new version). Publishing an incomplete or broken artifact creates a permanent bad experience for users.
 >
-> If you need to test the release workflow, publish a `-SNAPSHOT` or use the Central Portal's test mode. Do not tag a release version until the library is ready.
+> If you need to test the release workflow, use the Central Portal's validation flow. Do not tag a release version until the library is ready.
 
 ---
 

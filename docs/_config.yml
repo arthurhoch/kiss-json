@@ -1,5 +1,5 @@
 title: KissJson
-description: A tiny, high-performance, zero-dependency Java 17+ JSON library
+description: Tiny zero-dependency Java 17+ JSON library for field-based serialization and deserialization.
 url: "https://arthurhoch.github.io"
 baseurl: "/kiss-json"
 theme: jekyll-theme-minimal

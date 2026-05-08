@@ -1,6 +1,6 @@
 # Maven Central Publication Guide
 
-> **Release hardening guide.** Do not publish until implementation, tests, docs, and release validation are complete.
+> **Release guide.** Version `0.1.0` is published on Maven Central. Future releases must still complete implementation, tests, docs, and release validation before publishing.
 
 This guide describes how to publish KissJson artifacts to Maven Central via the Sonatype Central Publisher Portal.
 
@@ -278,6 +278,6 @@ git push origin main
 
 ---
 
-## Important: Do Not Publish Early
+## Important: Do Not Publish Future Releases Early
 
-> Do not publish to Maven Central until implementation and tests are complete. A premature publish creates a permanent artifact that cannot be deleted. The first release should be a fully functional v1 (or a well-documented alpha/beta if intentional).
+> Do not publish future versions to Maven Central until implementation and tests are complete. A premature publish creates a permanent artifact that cannot be deleted. Every release should be fully functional for its documented scope.

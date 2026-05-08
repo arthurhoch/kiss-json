@@ -30,6 +30,8 @@ docs/
 ├── EXAMPLES.md          # Common usage patterns
 ├── PERFORMANCE.md       # Performance strategy
 ├── BENCHMARKS.md        # Benchmark methodology and results
+├── SECURITY_SCANNING.md # Security scanning setup
+├── TESTING_REPORT.md    # Current verification report
 ├── MAVEN_CENTRAL.md     # Maven Central publication guide
 └── RELEASE.md           # Release process
 ```
@@ -155,7 +157,7 @@ In v1, the API reference is **manually maintained** and must match the public AP
 
 ### Linking Between Docs
 
-- Use relative links within `docs/`: `[Configuration](CONFIGURATION.md)`
+- Use relative links within `docs/`, for example linking to `CONFIGURATION.md` from another docs page.
 - Use absolute GitHub links to architecture docs: `[Architecture](https://github.com/arthurhoch/kiss-json/blob/main/.github/architecture/00-product-purpose.md)`
 - Use Javadoc links where applicable: `{@link Json#stringify(Object)}`
 

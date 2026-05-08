@@ -1,14 +1,29 @@
 # KissJson
 
-A tiny, high-performance, zero-dependency Java 17+ JSON library with field-based object mapping.
+Tiny zero-dependency Java 17+ JSON library for field-based serialization and deserialization.
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.arthurhoch/kiss-json.svg)](https://central.sonatype.com/artifact/io.github.arthurhoch/kiss-json)
+[![Java](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://openjdk.org/projects/jdk/17/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE.txt)
+[![CI](https://github.com/arthurhoch/kiss-json/actions/workflows/ci.yml/badge.svg)](https://github.com/arthurhoch/kiss-json/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/arthurhoch/kiss-json/actions/workflows/codeql.yml/badge.svg)](https://github.com/arthurhoch/kiss-json/actions/workflows/codeql.yml)
+[![Docs](https://github.com/arthurhoch/kiss-json/actions/workflows/pages.yml/badge.svg)](https://github.com/arthurhoch/kiss-json/actions/workflows/pages.yml)
+
+Part of the KISS Java Libraries family: small, explicit, zero-dependency Java 17+ libraries. Each project is independent. Use only the modules you need.
 
 ## Status
 
-**Initial v1 implementation is present and under validation.** This repository contains the JSON parser, writer, field-based mapper, public API, tests, project specification, architecture, and governance files.
+Latest stable release: `0.1.0`.
 
-Do not publish a functional release until implementation and tests are complete.
+Current development version: `0.1.1-SNAPSHOT`.
 
-## Maven
+The `0.1.0` artifact is published on Maven Central and the `v0.1.0` GitHub release is available.
+
+## Why this exists
+
+KissJson exists for Java projects that need practical JSON serialization and deserialization without introducing a large JSON framework or transitive runtime dependencies. It maps fields directly, keeps configuration explicit, and returns errors with enough context to debug malformed JSON or mapping failures.
+
+## Installation
 
 ```xml
 <dependency>
@@ -18,7 +33,7 @@ Do not publish a functional release until implementation and tests are complete.
 </dependency>
 ```
 
-## Quick Examples
+## Quick Start
 
 ```java
 Json json = Json.create();
@@ -68,6 +83,16 @@ Json json = Json.builder()
 - **Rich errors**: Exceptions contain path, line, column, target type, field name, and the real failure cause.
 - **No internal API exposure**: Users interact only with the public API.
 - **Safe defaults**: Forgiving, practical, hard to misuse.
+
+## Design Principles
+
+- KISS: keep the library small, explicit, and understandable.
+- Zero production dependencies.
+- Java 17+ standard APIs.
+- Field-based behavior instead of JavaBean magic.
+- Small public API and internal classes kept internal.
+- Predictable errors with useful path, location, type, field, and cause details.
+- Low maintenance and no framework lock-in.
 
 ## KISS Boundary
 
@@ -134,6 +159,18 @@ User user = json.parse(text, User.class);
 - No public internal parser/writer/mapper/cache/model classes
 - No production dependencies, code generation, Lombok, annotation processing
 
+## Related KISS Projects
+
+These libraries are independent, zero-dependency Java 17+ projects. Use only the modules you need.
+
+| Project | Purpose |
+|---|---|
+| [kiss-json](https://github.com/arthurhoch/kiss-json) | Field-based JSON serialization and deserialization. |
+| [kiss-requests](https://github.com/arthurhoch/kiss-requests) | Simple HTTP client built on Java HttpClient. |
+| [kiss-server](https://github.com/arthurhoch/kiss-server) | Small HTTP/1.1 server for simple REST-style applications. |
+| [kiss-config](https://github.com/arthurhoch/kiss-config) | Configuration loading from properties, .env files, system properties, and environment variables. |
+| [kiss-binary](https://github.com/arthurhoch/kiss-binary) | Explicit binary IO for primitive binary formats. |
+
 ## Benchmarks
 
 JMH benchmarks, including a benchmark-only comparison with Jackson, run from the isolated `benchmark` Maven profile:
@@ -145,12 +182,31 @@ mvn -Pbenchmark exec:exec
 
 Jackson is used only in that benchmark profile and is not a production dependency. Benchmark results depend on JVM, hardware, warmup, and payload shape; see [Performance](docs/PERFORMANCE.md) for scenarios and process.
 
-## Security and quality checks
+## Requirements
+
+- Java 17 or newer.
+- Maven for building from source.
+
+## Build
+
+```bash
+mvn -B clean verify
+```
+
+Additional configured profiles:
+
+```bash
+mvn -Pbenchmark clean test-compile
+mvn -Psecurity verify
+mvn -Pquality verify
+```
+
+## Security and Quality
 
 Normal development and CI use the fast build:
 
 ```bash
-mvn -B verify
+mvn -B clean verify
 ```
 
 Security-heavy dependency scanning runs separately:
@@ -169,14 +225,17 @@ GitHub Actions run CodeQL and Semgrep as separate workflows. Dependabot tracks M
 
 ## Documentation
 
+- [GitHub Pages](https://arthurhoch.github.io/kiss-json/)
 - [Product Specification](docs/PRODUCT_SPEC.md)
 - [Getting Started](docs/GETTING_STARTED.md)
+- [AI Usage Guide](docs/AI_USAGE.md)
 - [API Reference](docs/API.md)
 - [Configuration](docs/CONFIGURATION.md)
 - [Examples](docs/EXAMPLES.md)
 - [Error Handling](docs/ERROR_HANDLING.md)
 - [Performance](docs/PERFORMANCE.md)
 - [Security Scanning](docs/SECURITY_SCANNING.md)
+- [Testing Report](docs/TESTING_REPORT.md)
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md)
 - [Release Guide](docs/RELEASE.md)
 - [Maven Central Guide](docs/MAVEN_CENTRAL.md)
