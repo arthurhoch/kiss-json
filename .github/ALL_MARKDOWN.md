@@ -57,6 +57,7 @@ Manual index of every markdown file in the KissJson repository and its purpose.
 | `docs/ERROR_HANDLING.md` | Error handling and exception reference |
 | `docs/PERFORMANCE.md` | Performance strategy and benchmark plan |
 | `docs/SECURITY_SCANNING.md` | Security scanning setup for CodeQL, Dependabot, Semgrep, OWASP, SpotBugs, and optional Snyk |
+| `docs/security-hardening.md` | Security workflow hardening, local checks, and manual GitHub settings |
 | `docs/TESTING_REPORT.md` | Current verification report and known limits |
 | `docs/IMPLEMENTATION_PLAN.md` | Phased implementation plan |
 | `docs/REVIEW_CHECKLIST.md` | Pre-implementation, pre-release, pre-publish checklists |

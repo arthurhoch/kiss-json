@@ -78,6 +78,7 @@ User parsed = json.parse(text, User.class);
 | [Performance](PERFORMANCE.html) | Performance design and expectations |
 | [Benchmarks](BENCHMARKS.html) | JMH benchmark results vs Jackson |
 | [Security Scanning](SECURITY_SCANNING.html) | CodeQL, Semgrep, Dependabot, OWASP, SpotBugs, and optional Snyk |
+| [Security Hardening](security-hardening.html) | CodeQL build, Dependency Review, OpenSSF Scorecard, and manual GitHub setup |
 | [Testing Report](TESTING_REPORT.html) | Current verification results and known limits |
 | [Safe Code Cleanup](code-cleanup.html) | Coverage, quality checks, and deletion policy |
 | [Implementation Plan](IMPLEMENTATION_PLAN.html) | Phased implementation roadmap |

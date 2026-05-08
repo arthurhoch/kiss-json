@@ -49,9 +49,16 @@ CodeQL runs in `.github/workflows/codeql.yml` on:
 
 - pushes to `main`;
 - pull requests targeting `main`;
-- a weekly schedule.
+- a weekly schedule;
+- manual dispatch.
 
-The workflow uses Java 17 and a Maven build for analysis. It does not publish artifacts and does not require repository secrets.
+The workflow uses Java 17, Maven cache, `security-and-quality` queries, and this analysis build:
+
+```bash
+mvn -B -DskipTests -Djacoco.skip=true package
+```
+
+It does not publish artifacts and does not require repository secrets.
 
 ### Semgrep
 
@@ -73,6 +80,16 @@ Dependabot is configured in `.github/dependabot.yml` for:
 - GitHub Actions dependencies in `/`.
 
 Updates are scheduled weekly and labeled `dependencies` and `security`.
+
+### Dependency Review
+
+Dependency Review runs on pull requests and checks dependency diffs for known vulnerabilities. It fails on moderate or higher severity findings and does not require repository secrets.
+
+### OpenSSF Scorecard
+
+OpenSSF Scorecard runs on schedule and manual dispatch. It uploads SARIF to code scanning and uses only GitHub-provided permissions.
+
+See [Security Hardening](security-hardening.md) for the repository settings that must be enabled in GitHub.
 
 ## OWASP Dependency-Check
 
@@ -132,5 +149,5 @@ Security workflows must not use those secrets.
 - Do not add production dependencies for scanning.
 - Do not make `mvn -B clean verify` download vulnerability databases.
 - Do not suppress security findings without a documented reason.
-- Keep CodeQL, Dependabot, Semgrep, and OWASP configuration consistent with this document.
+- Keep CodeQL, Dependabot, Dependency Review, OpenSSF Scorecard, Semgrep, and OWASP configuration consistent with this document.
 - Never commit credentials, tokens, private keys, or generated secret files.

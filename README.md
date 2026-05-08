@@ -231,7 +231,7 @@ mvn -B test jacoco:report
 
 Read the HTML report at `target/site/jacoco/index.html`. The XML report for Codecov or Sonar integrations is `target/site/jacoco/jacoco.xml`; no coverage badge is shown until one of those services is actually configured.
 
-GitHub Actions run CI, CodeQL, Semgrep, GitHub Pages, and release workflows. Dependabot tracks Maven and GitHub Actions updates weekly. OWASP Dependency-Check is available through the `security` Maven profile. Snyk is optional/manual unless maintainers configure it later. See [Security Scanning](docs/SECURITY_SCANNING.md).
+GitHub Actions run CI, CodeQL, Semgrep, Dependency Review, OpenSSF Scorecard, GitHub Pages, and release workflows. Dependabot tracks Maven and GitHub Actions updates weekly. OWASP Dependency-Check is available through the `security` Maven profile. Snyk is optional/manual unless maintainers configure it later. See [Security Scanning](docs/SECURITY_SCANNING.md) and [Security Hardening](docs/security-hardening.md).
 
 Before deleting code, follow [Safe Code Cleanup](docs/code-cleanup.md): distinguish internal code from public API, search source/tests/docs/examples, inspect coverage, run Javadocs, and document user-visible removals in `CHANGELOG.md`. Before release, run the normal build, Javadocs, coverage generation, and any relevant optional quality/security profiles.
 
@@ -247,6 +247,7 @@ Before deleting code, follow [Safe Code Cleanup](docs/code-cleanup.md): distingu
 - [Error Handling](docs/ERROR_HANDLING.md)
 - [Performance](docs/PERFORMANCE.md)
 - [Security Scanning](docs/SECURITY_SCANNING.md)
+- [Security Hardening](docs/security-hardening.md)
 - [Testing Report](docs/TESTING_REPORT.md)
 - [Safe Code Cleanup](docs/code-cleanup.md)
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md)
