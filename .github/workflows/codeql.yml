@@ -7,6 +7,7 @@ on:
     branches: [ main ]
   schedule:
     - cron: '0 6 * * 1'
+  workflow_dispatch:
 
 jobs:
   analyze:
@@ -25,6 +26,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
