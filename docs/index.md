@@ -79,6 +79,7 @@ User parsed = json.parse(text, User.class);
 | [Benchmarks](BENCHMARKS.html) | JMH benchmark results vs Jackson |
 | [Security Scanning](SECURITY_SCANNING.html) | CodeQL, Semgrep, Dependabot, OWASP, SpotBugs, and optional Snyk |
 | [Testing Report](TESTING_REPORT.html) | Current verification results and known limits |
+| [Safe Code Cleanup](code-cleanup.html) | Coverage, quality checks, and deletion policy |
 | [Implementation Plan](IMPLEMENTATION_PLAN.html) | Phased implementation roadmap |
 | [Review Checklist](REVIEW_CHECKLIST.html) | Pre-release review checklist |
 | [Maven Central](MAVEN_CENTRAL.html) | Publishing to Maven Central |

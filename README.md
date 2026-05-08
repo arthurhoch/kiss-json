@@ -191,6 +191,8 @@ Jackson is used only in that benchmark profile and is not a production dependenc
 
 ```bash
 mvn -B clean verify
+mvn -B test jacoco:report
+mvn -B javadoc:javadoc
 ```
 
 Additional configured profiles:
@@ -221,7 +223,17 @@ Optional static quality checks run separately:
 mvn -Pquality verify
 ```
 
-GitHub Actions run CodeQL and Semgrep as separate workflows. Dependabot tracks Maven and GitHub Actions updates weekly. OWASP Dependency-Check is available through the `security` Maven profile. Snyk is optional/manual unless maintainers configure it later. See [Security Scanning](docs/SECURITY_SCANNING.md).
+JaCoCo coverage is generated during `verify` and can be regenerated locally with:
+
+```bash
+mvn -B test jacoco:report
+```
+
+Read the HTML report at `target/site/jacoco/index.html`. The XML report for Codecov or Sonar integrations is `target/site/jacoco/jacoco.xml`; no coverage badge is shown until one of those services is actually configured.
+
+GitHub Actions run CI, CodeQL, Semgrep, GitHub Pages, and release workflows. Dependabot tracks Maven and GitHub Actions updates weekly. OWASP Dependency-Check is available through the `security` Maven profile. Snyk is optional/manual unless maintainers configure it later. See [Security Scanning](docs/SECURITY_SCANNING.md).
+
+Before deleting code, follow [Safe Code Cleanup](docs/code-cleanup.md): distinguish internal code from public API, search source/tests/docs/examples, inspect coverage, run Javadocs, and document user-visible removals in `CHANGELOG.md`. Before release, run the normal build, Javadocs, coverage generation, and any relevant optional quality/security profiles.
 
 ## Documentation
 
@@ -236,6 +248,7 @@ GitHub Actions run CodeQL and Semgrep as separate workflows. Dependabot tracks M
 - [Performance](docs/PERFORMANCE.md)
 - [Security Scanning](docs/SECURITY_SCANNING.md)
 - [Testing Report](docs/TESTING_REPORT.md)
+- [Safe Code Cleanup](docs/code-cleanup.md)
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md)
 - [Release Guide](docs/RELEASE.md)
 - [Maven Central Guide](docs/MAVEN_CENTRAL.md)

@@ -3,7 +3,7 @@
 KissJson keeps security tooling useful but isolated. The default developer build stays fast and does not download vulnerability databases:
 
 ```bash
-mvn -B verify
+mvn -B clean verify
 ```
 
 Security-heavy checks run separately:
@@ -27,10 +27,21 @@ None of these commands require Maven Central publishing credentials or GPG secre
 The normal CI workflow runs only:
 
 ```bash
-mvn -B verify
+mvn -B clean verify
 ```
 
-It does not run OWASP Dependency-Check, SpotBugs, release publishing, or any secret-backed tooling.
+It generates Surefire and JaCoCo reports, then uploads them as workflow artifacts. It does not run OWASP Dependency-Check, SpotBugs, release publishing, or any secret-backed tooling.
+
+### Coverage
+
+JaCoCo runs during Maven `verify`. Local coverage reports are generated at:
+
+```text
+target/site/jacoco/jacoco.xml
+target/site/jacoco/index.html
+```
+
+Use the HTML report for review and the XML report for Codecov or Sonar if those services are configured later. No Codecov or Sonar token is required for the current repository setup.
 
 ### CodeQL
 
@@ -119,7 +130,7 @@ Security workflows must not use those secrets.
 ## Maintenance Rules
 
 - Do not add production dependencies for scanning.
-- Do not make `mvn -B verify` download vulnerability databases.
+- Do not make `mvn -B clean verify` download vulnerability databases.
 - Do not suppress security findings without a documented reason.
 - Keep CodeQL, Dependabot, Semgrep, and OWASP configuration consistent with this document.
 - Never commit credentials, tokens, private keys, or generated secret files.

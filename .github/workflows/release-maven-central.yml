@@ -44,7 +44,7 @@ jobs:
           GPG_TTY: /dev/null
 
       - name: Run tests
-        run: mvn -B verify
+        run: mvn -B clean verify
 
       - name: Publish to Maven Central
         run: mvn -B deploy -Prelease -Dgpg.passphrase="${GPG_PASSPHRASE}"

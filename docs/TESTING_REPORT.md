@@ -15,16 +15,20 @@ Date: 2026-05-08
 
 ```bash
 mvn -B clean verify
+mvn -B test jacoco:report
 mvn -B javadoc:javadoc
-mvn -B -Pquality verify
+mvn -B -Pquality -DskipTests verify
+mvn -B -Psecurity -Ddependency-check.skip=true -DskipTests verify
 mvn -B -Pbenchmark test-compile
 ```
 
 Results:
 
 - `mvn -B clean verify`: passing, 152 tests, 0 failures, 0 errors.
+- `mvn -B test jacoco:report`: passing; reports generated at `target/site/jacoco/jacoco.xml` and `target/site/jacoco/index.html`.
 - `mvn -B javadoc:javadoc`: passing.
-- `mvn -B -Pquality verify`: passing, SpotBugs completed with 0 findings.
+- `mvn -B -Pquality -DskipTests verify`: passing, SpotBugs completed with 0 findings.
+- `mvn -B -Psecurity -Ddependency-check.skip=true -DskipTests verify`: passing profile validation with Dependency-Check database scanning intentionally skipped.
 - `mvn -B -Pbenchmark test-compile`: passing. The benchmark profile compiles with benchmark-only Jackson dependencies; full JMH benchmarks were not run.
 
 ## Known Limits
