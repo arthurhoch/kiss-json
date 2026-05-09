@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{{ site.description | default: page.description | escape }}">
   <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-  <link rel="stylesheet" href="{{ '/assets/kiss.css' | relative_url }}">
+  <link rel="stylesheet" href="/kiss-json/assets/kiss.css">
 </head>
 <body>
   <header class="site-header">
     <div class="site-header-inner">
-      <a class="brand" href="{{ '/' | relative_url }}"><span>KISS</span>{{ site.title }}</a>
+      <a class="brand" href="/kiss-json/"><span>KISS</span>{{ site.title }}</a>
       <nav class="site-nav" aria-label="Primary navigation">
-        <a href="{{ '/' | relative_url }}">Docs</a>
-        {% if site.maven_url %}<a href="{{ site.maven_url }}">Maven Central</a>{% endif %}
-        {% if site.repo_url %}<a href="{{ site.repo_url }}">GitHub</a>{% endif %}
+        <a href="/kiss-json/">Docs</a>
+        <a href="https://central.sonatype.com/artifact/io.github.arthurhoch/kiss-json">Maven Central</a>
+        <a href="https://github.com/arthurhoch/kiss-json">GitHub</a>
       </nav>
     </div>
   </header>
