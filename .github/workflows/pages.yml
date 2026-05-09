@@ -5,6 +5,10 @@ on:
     branches: [ main ]
     paths:
       - 'docs/**'
+      - 'src/main/java/**'
+      - 'pom.xml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -25,6 +29,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
@@ -33,6 +44,25 @@ jobs:
         with:
           source: docs
           destination: ./_site
+
+      - name: Fix generated site permissions
+        run: sudo chown -R "$USER":"$USER" _site
+
+      - name: Generate Javadocs
+        run: mvn -B -DskipTests javadoc:javadoc
+
+      - name: Add Javadocs
+        run: |
+          mkdir -p _site/javadocs
+          if [ -d target/reports/apidocs ]; then
+            cp -R target/reports/apidocs/. _site/javadocs/
+          elif [ -d target/site/apidocs ]; then
+            cp -R target/site/apidocs/. _site/javadocs/
+          else
+            echo "Javadocs not found under target/reports/apidocs or target/site/apidocs"
+            find target -maxdepth 4 -type d -name apidocs -print || true
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
