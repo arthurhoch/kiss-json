@@ -65,6 +65,7 @@ User parsed = json.parse(text, User.class);</code></pre>
   <div class="doc-grid">
     <a href="GETTING_STARTED.html">Getting Started<span>Install and first JSON round trip.</span></a>
     <a href="API.html">API Reference<span>Public API and annotations.</span></a>
+    <a href="skills/index.html">AI Skills<span>Versioned Markdown skill files for AI-assisted usage.</span></a>
     <a href="EXAMPLES.html">Examples<span>Copyable examples for common cases.</span></a>
     <a href="CONFIGURATION.html">Configuration<span>Builder options and behavior switches.</span></a>
     <a href="ERROR_HANDLING.html">Error Handling<span>Exception hierarchy and debug context.</span></a>

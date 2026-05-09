@@ -236,6 +236,7 @@ Before deleting code, follow [Safe Code Cleanup](docs/code-cleanup.md): distingu
 ## Documentation
 
 - [GitHub Pages](https://arthurhoch.github.io/kiss-json/)
+- [Versioned AI Skills](docs/skills/index.md)
 - [Product Specification](docs/PRODUCT_SPEC.md)
 - [Getting Started](docs/GETTING_STARTED.md)
 - [AI Usage Guide](docs/AI_USAGE.md)

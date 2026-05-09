@@ -47,3 +47,7 @@ JUnit 5. Every public method must have at least one test. Tests must be determin
 - Simple, readable code over clever code.
 - Every exception must be informative with context.
 - When in doubt, choose the simpler solution.
+
+## Versioned AI Skills
+
+Before creating a release tag, read `.github/skills-release-policy.md` and update the versioned Markdown skill artifacts under `docs/skills/`. Add a new `docs/skills/vX.Y.Z.md` file, update `docs/skills/index.md`, keep older skill files, and verify the complete public API/member index for the release.
